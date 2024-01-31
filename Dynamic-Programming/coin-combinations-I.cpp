@@ -56,7 +56,7 @@ ll binpow(ll a, ll b) {
 int main() {
     ll n, x;
     cin >> n >> x;
-    vector<ll> arr(n);
+    ll arr[n];
     for (ll i = 0; i < n; i++) cin >> arr[i];
  
     ll dp[x + 1] = {0};
@@ -66,9 +66,10 @@ int main() {
         for (ll j = 0; j < n; j++) {
             if (arr[j] <= i) {
                 dp[i] += dp[i - arr[j]];
-                dp[i] %= mod;
+                
             }
         }
+        dp[i] %= mod;
     }
  
     cout << dp[x] << endl;
