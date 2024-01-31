@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-using vi = vector<int>;
+using vi = vector<ll>;
 #define pb push_back
 #define rsz resize
 #define all(x) begin(x), end(x)
@@ -9,10 +9,7 @@ using vi = vector<int>;
 using pi = pair<int, int>;
 #define f first
 #define s second
-
- 
- 
-ll mod = 1e9 + 7;
+#define mod 1000000007
 // #################### Useful Functions ########################3
  
 // Find Factorial :
@@ -51,44 +48,41 @@ ll binpow(ll a, ll b) {
  
 // ##################### Start Code From Here Noob  ########################
  
- ll helper(vector<ll> &arr, ll i, ll x, vector<ll> &dp){
-    // Base Case    :
-    if(x < 0) return 0;
-    else if(x==0) return 1;
-
-    if(dp[x] != -1) return dp[x];
-
-    for(ll j = i; j < arr.size(); j++){
-        ll a =  helper(arr, i, x- arr[j], dp);
-        ll b =  helper(arr, i +1, x-arr[j], dp);
-
-        dp[x] += (a+b)%mod;
-    }
-
-    return dp[x];
-
- }
-
- 
-int main() {
-    ll n, x;
-    cin >> n >> x;
-    ll arr[n];
-    for (ll i = 0; i < n; i++) cin >> arr[i];
- 
-    ll dp[x + 1] = {0};
-    dp[0] = 1;
- 
-    for (ll i = 1; i <= x; i++) {
-        for (ll j = 0; j < n; j++) {
-            if (arr[j] <= i) {
-                dp[i] += dp[i - arr[j]];
-                
-            }
+ //Recursive
+    int helper(int i, int amount, vector<int> &coins, vector<vector<int>>&dp){
+        if(amount == 0){
+            return 1;
         }
-        dp[i] %= mod;
+        if(dp[i][amount] != -1)
+            return dp[i][amount];
+        int op1 = 0, op2 = 0;
+        if(amount - coins[i] >= 0)
+            op1 =  helper(i, amount - coins[i], coins, dp);
+        if( i+1 < coins.size())
+            op2 = helper(i+1, amount, coins, dp);
+
+        return dp[i][amount] = op1 + op2;
     }
- 
+
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    int n, x;
+    cin >> n >> x;
+    vi coins(n);
+    for (int i = 0; i < n; i++) {
+        cin >> coins[i];
+    }
+
+    vi dp(x + 1);
+    dp[0] = 1;
+    
+    for (ll &coin : coins) {
+        for (int weight = coin; weight <= x; weight++) {
+            dp[weight] = (dp[weight] + dp[weight - coin])%mod;        }
+    }
+
     cout << dp[x] << endl;
     return 0;
 }
